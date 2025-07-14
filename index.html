@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>AI Quiz App</title>
+    <meta name="description" content="Test your knowledge with our interactive AI Quiz App featuring 12 different topics including Math, Science, History, and more!"/>
+    <meta name="theme-color" content="#bb86fc"/>
+    <title>AI Quiz App - Test Your Knowledge</title>
     <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -11,16 +13,70 @@
     <h1>AI Quiz App</h1>
 
     <div id="topic-container">
-    <h2>Select a Topic:</h2>
-    <select id="topic-select">
-        <option value="9">General Knowledge</option>
-        <option value="17">Science & Nature</option>
-        <option value="23">History</option>
-        <option value="21">Sports</option>
-        <option value="22">Geography</option>
-        <option value="18">Computer Science</option>
-    </select>
-    <button id="start-btn">Start Quiz</button>
+    <h2>🎯 Choose Your Challenge:</h2>
+    <div class="topic-grid">
+        <div class="topic-card" data-category="9" data-icon="🧠">
+            <div class="topic-icon">🧠</div>
+            <h3>General Knowledge</h3>
+            <p>Test your overall knowledge</p>
+        </div>
+        <div class="topic-card" data-category="19" data-icon="🧮">
+            <div class="topic-icon">🧮</div>
+            <h3>Mathematics</h3>
+            <p>Numbers, equations & logic</p>
+        </div>
+        <div class="topic-card" data-category="17" data-icon="🔬">
+            <div class="topic-icon">🔬</div>
+            <h3>Science & Nature</h3>
+            <p>Biology, physics & chemistry</p>
+        </div>
+        <div class="topic-card" data-category="23" data-icon="🏛️">
+            <div class="topic-icon">🏛️</div>
+            <h3>History</h3>
+            <p>Past events & civilizations</p>
+        </div>
+        <div class="topic-card" data-category="21" data-icon="⚽">
+            <div class="topic-icon">⚽</div>
+            <h3>Sports</h3>
+            <p>Games, athletes & records</p>
+        </div>
+        <div class="topic-card" data-category="22" data-icon="🌍">
+            <div class="topic-icon">🌍</div>
+            <h3>Geography</h3>
+            <p>Countries, capitals & maps</p>
+        </div>
+        <div class="topic-card" data-category="18" data-icon="💻">
+            <div class="topic-icon">💻</div>
+            <h3>Computer Science</h3>
+            <p>Programming & technology</p>
+        </div>
+        <div class="topic-card" data-category="11" data-icon="🎬">
+            <div class="topic-icon">🎬</div>
+            <h3>Bollywood Movies</h3>
+            <p>Hindi films, actors & directors</p>
+        </div>
+        <div class="topic-card" data-category="12" data-icon="🎵">
+            <div class="topic-icon">🎵</div>
+            <h3>Bollywood Music</h3>
+            <p>Hindi songs, playback singers & composers</p>
+        </div>
+        <div class="topic-card" data-category="20" data-icon="📚">
+            <div class="topic-icon">📚</div>
+            <h3>Mythology</h3>
+            <p>Gods, legends & folklore</p>
+        </div>
+        <div class="topic-card" data-category="25" data-icon="🎨">
+            <div class="topic-icon">🎨</div>
+            <h3>Art</h3>
+            <p>Paintings, sculptures & artists</p>
+        </div>
+        <div class="topic-card" data-category="27" data-icon="🐾">
+            <div class="topic-icon">🐾</div>
+            <h3>Animals</h3>
+            <p>Wildlife & creatures</p>
+        </div>
+    </div>
+    <button id="start-btn" class="hidden">Start Quiz</button>
     </div>
 
     <div id="quiz-container" class="hidden">
