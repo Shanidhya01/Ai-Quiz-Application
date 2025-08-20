@@ -16,52 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let score = 0;
     let selected = false;
     let selectedTopic = null;
-
-    // AI will generate all Bollywood questions dynamically
-
-    // AI-Generated Bollywood Questions Function
-    async function generateBollywoodQuestions(category) {
-        try {
-            // Enhanced prompts for better AI generation
-            const prompt = category === 'movies' 
-                ? `Create exactly 10 multiple choice quiz questions about Bollywood movies. Include questions about:
-                - Famous actors like Shah Rukh Khan, Amitabh Bachchan, Aamir Khan, Salman Khan
-                - Classic movies like Sholay, DDLJ, 3 Idiots, Mughal-E-Azam
-                - Directors like Yash Chopra, Rajkumar Hirani, Sanjay Leela Bhansali
-                - Famous dialogues and songs
-                Format: Return ONLY a JSON array with objects containing: question, choices (array of 4 options), answer`
-                : `Create exactly 10 multiple choice quiz questions about Bollywood music. Include questions about:
-                - Legendary singers like Lata Mangeshkar, Mohammed Rafi, Kishore Kumar
-                - Music directors like A.R. Rahman, R.D. Burman, Shankar-Jaikishan
-                - Famous songs from movies like DDLJ, Aashiqui, Lagaan
-                - Playback singers and composers
-                Format: Return ONLY a JSON array with objects containing: question, choices (array of 4 options), answer`;
-
-            // Try multiple AI services for question generation
-            let generatedQuestions = await tryAIGeneration(prompt);
-            
-            if (generatedQuestions && generatedQuestions.length >= 5) {
-                // Ensure we have enough questions, pad if necessary
-                while (generatedQuestions.length < 10) {
-                    const additionalQuestions = await tryAIGeneration(prompt);
-                    if (additionalQuestions && additionalQuestions.length > 0) {
-                        generatedQuestions = generatedQuestions.concat(additionalQuestions);
-                    } else {
-                        break;
-                    }
-                }
-                return shuffle(generatedQuestions).slice(0, 10);
-            } else {
-                // If AI generation completely fails, create template-based questions
-                console.log('AI generation failed, creating template questions');
-                return generateAdvancedTemplateQuestions(category);
-            }
-        } catch (error) {
-            console.error('Error generating AI questions:', error);
-            // Create template-based questions as fallback
-            return generateAdvancedTemplateQuestions(category);
-        }
-    }
+    
 
     // Try different AI services for question generation
     async function tryAIGeneration(prompt) {
@@ -96,12 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('Hugging Face API failed');
             },
 
-            // Alternative free AI service
-            async () => {
-                // This would be another free AI API
-                console.log('Trying alternative AI service...');
-                return generateAdvancedTemplateQuestions(prompt.includes('movies') ? 'movies' : 'music');
-            }
+            
         ];
 
         for (const service of aiServices) {
@@ -171,107 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return questions;
     }
 
-    // Advanced Template-based question generation
-    function generateAdvancedTemplateQuestions(category) {
-        if (category === 'movies') {
-            const movieData = [
-                { movie: "Sholay", year: "1975", director: "Ramesh Sippy", actor: "Amitabh Bachchan", dialogue: "Kitne aadmi the" },
-                { movie: "Dilwale Dulhania Le Jayenge", year: "1995", director: "Aditya Chopra", actor: "Shah Rukh Khan", dialogue: "Palat" },
-                { movie: "3 Idiots", year: "2009", director: "Rajkumar Hirani", actor: "Aamir Khan", dialogue: "All is well" },
-                { movie: "Mughal-E-Azam", year: "1960", director: "K. Asif", actor: "Dilip Kumar", dialogue: "Pyaar kiya to darna kya" },
-                { movie: "Lagaan", year: "2001", director: "Ashutosh Gowariker", actor: "Aamir Khan", dialogue: "Maan gaye hum" },
-                { movie: "Zanjeer", year: "1973", director: "Prakash Mehra", actor: "Amitabh Bachchan", dialogue: "Rishtey mein hum tumhare" },
-                { movie: "Kuch Kuch Hota Hai", year: "1998", director: "Karan Johar", actor: "Shah Rukh Khan", dialogue: "Kuch kuch hota hai" },
-                { movie: "Dangal", year: "2016", director: "Nitesh Tiwari", actor: "Aamir Khan", dialogue: "Mhari chhoriyan" },
-                { movie: "Taare Zameen Par", year: "2007", director: "Aamir Khan", actor: "Aamir Khan", dialogue: "Har bachcha khaas hai" },
-                { movie: "Queen", year: "2013", director: "Vikas Bahl", actor: "Kangana Ranaut", dialogue: "London thumakda" }
-            ];
-
-            const questions = [];
-            const shuffledData = shuffle([...movieData]);
-
-            shuffledData.forEach((data, index) => {
-                const templates = [
-                    {
-                        question: `Who directed the movie "${data.movie}"?`,
-                        correct: data.director,
-                        others: ["Yash Chopra", "Sanjay Leela Bhansali", "Rohit Shetty", "Imtiaz Ali"]
-                    },
-                    {
-                        question: `In which year was "${data.movie}" released?`,
-                        correct: data.year,
-                        others: [String(parseInt(data.year) - 1), String(parseInt(data.year) + 1), String(parseInt(data.year) + 2)]
-                    },
-                    {
-                        question: `Who played the lead role in "${data.movie}"?`,
-                        correct: data.actor,
-                        others: ["Salman Khan", "Hrithik Roshan", "Akshay Kumar", "Ranbir Kapoor"]
-                    }
-                ];
-
-                if (index < 10) {
-                    const template = templates[index % templates.length];
-                    const wrongChoices = shuffle(template.others.filter(opt => opt !== template.correct)).slice(0, 3);
-                    questions.push({
-                        question: template.question,
-                        choices: shuffle([template.correct, ...wrongChoices]),
-                        answer: template.correct
-                    });
-                }
-            });
-
-            return questions.slice(0, 10);
-        } else {
-            // Music questions
-            const musicData = [
-                { singer: "Lata Mangeshkar", title: "Nightingale of India", song: "Lag Jaa Gale", movie: "Woh Kaun Thi" },
-                { singer: "Mohammed Rafi", title: "King of Playback Singing", song: "Chaudhvin Ka Chand", movie: "Chaudhvin Ka Chand" },
-                { singer: "Kishore Kumar", title: "Versatile Singer", song: "Roop Tera Mastana", movie: "Aradhana" },
-                { singer: "A.R. Rahman", title: "Mozart of Madras", song: "Jai Ho", movie: "Slumdog Millionaire" },
-                { singer: "R.D. Burman", title: "Pancham Da", song: "Chura Liya Hai", movie: "Yaadon Ki Baaraat" },
-                { singer: "Asha Bhosle", title: "Queen of Playback", song: "Dum Maro Dum", movie: "Hare Rama Hare Krishna" },
-                { singer: "Kumar Sanu", title: "King of 90s", song: "Tujhe Dekha To", movie: "DDLJ" },
-                { singer: "Udit Narayan", title: "Melodious Voice", song: "Papa Kehte Hain", movie: "Qayamat Se Qayamat Tak" },
-                { singer: "Alka Yagnik", title: "Sweet Voice", song: "Taal Se Taal", movie: "Taal" },
-                { singer: "Sonu Nigam", title: "Modern Legend", song: "Kal Ho Naa Ho", movie: "Kal Ho Naa Ho" }
-            ];
-
-            const questions = [];
-            const shuffledData = shuffle([...musicData]);
-
-            shuffledData.forEach((data, index) => {
-                const templates = [
-                    {
-                        question: `Who is known as the "${data.title}"?`,
-                        correct: data.singer,
-                        others: ["Shreya Ghoshal", "Sunidhi Chauhan", "Arijit Singh", "Rahat Fateh Ali Khan"]
-                    },
-                    {
-                        question: `Who sang the song "${data.song}"?`,
-                        correct: data.singer,
-                        others: ["Manna Dey", "Mukesh", "Hemant Kumar", "Talat Mahmood"]
-                    },
-                    {
-                        question: `The song "${data.song}" is from which movie?`,
-                        correct: data.movie,
-                        others: ["Kabhi Kabhie", "Silsila", "Aandhi", "Amar Prem"]
-                    }
-                ];
-
-                if (index < 10) {
-                    const template = templates[index % templates.length];
-                    const wrongChoices = shuffle(template.others.filter(opt => opt !== template.correct)).slice(0, 3);
-                    questions.push({
-                        question: template.question,
-                        choices: shuffle([template.correct, ...wrongChoices]),
-                        answer: template.correct
-                    });
-                }
-            });
-
-            return questions.slice(0, 10);
-        }
-    }
+    
 
     // Topic card selection
     topicCards.forEach(card => {
@@ -317,12 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
         startBtn.classList.add('loading');
         startBtn.textContent = 'Generating Questions...';
         
-        // Check if it's a Bollywood category
-        if (topic === '11') { // Bollywood Movies
-          questions = await generateBollywoodQuestions('movies');
-        } else if (topic === '12') { // Bollywood Music
-          questions = await generateBollywoodQuestions('music');
-        } else {
+        
           // Use API for other categories
           const response = await fetch(`https://opentdb.com/api.php?amount=10&category=${topic}&type=multiple`);
           const data = await response.json();
@@ -336,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
             choices: shuffle([...q.incorrect_answers, q.correct_answer].map(decodeHTML)),
             answer: decodeHTML(q.correct_answer)
           }));
-        }
+        
 
         topicContainer.classList.add('hidden');
         quizContainer.classList.remove('hidden');
